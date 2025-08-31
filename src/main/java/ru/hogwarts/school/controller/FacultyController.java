@@ -18,7 +18,7 @@ public class FacultyController {
 
     @PostMapping
     public ResponseEntity<Faculty> postFaculty(@RequestBody Long id , @RequestBody Faculty faculty){
-        facultyService.post(faculty,id);
+        facultyService.post(faculty);
         return ResponseEntity.ok(facultyService.get(id));
     }
 
@@ -30,7 +30,7 @@ public class FacultyController {
 
     @PutMapping
     public ResponseEntity<Faculty> putFaculty(@RequestBody Faculty faculty){
-        facultyService.add(faculty);
+        facultyService.post(faculty);
         return ResponseEntity.ok(faculty);
     }
 
