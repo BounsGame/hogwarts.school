@@ -1,0 +1,47 @@
+package ru.hogwarts.school.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.service.StudentService;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/student")
+public class StudentController {
+    private StudentService studentService;
+
+    public StudentController (StudentService studentService){
+        this.studentService = studentService;
+    }
+
+    @PostMapping
+    public ResponseEntity<Student> postStudent(@RequestBody Long id , @RequestBody Student student){
+        studentService.post(student,id);
+        return ResponseEntity.ok(studentService.get(id));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Student> deleteStudent(@RequestBody Long id){
+        studentService.remove(id);
+        return ResponseEntity.ok(null);
+    }
+
+    @PutMapping
+    public ResponseEntity<Student> putStudent(@RequestBody Student student){
+        studentService.add(student);
+        return ResponseEntity.ok(student);
+    }
+
+    @GetMapping
+    public ResponseEntity<Student> getStudent(@RequestBody Long id){
+        return ResponseEntity.ok(studentService.get(id));
+    }
+
+    @GetMapping("{amount}")
+    public ResponseEntity<List<Student>> getStudentInAge (@PathVariable int age){
+        return ResponseEntity.ok(studentService.getOnAge(age));
+    }
+}
