@@ -23,8 +23,8 @@ public class StudentController {
         return ResponseEntity.ok(studentService.get(id));
     }
 
-    @DeleteMapping
-    public ResponseEntity<Student> deleteStudent(@RequestBody Long id){
+    @DeleteMapping("{id}")
+    public ResponseEntity<Student> deleteStudent(@PathVariable Long id){
         studentService.remove(id);
         return ResponseEntity.ok(null);
     }
@@ -36,11 +36,11 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<Student> getStudent(@RequestBody Long id){
+    public ResponseEntity<Student> getStudent(@RequestParam Long id){
         return ResponseEntity.ok(studentService.get(id));
     }
 
-    @GetMapping("{amount}")
+    @GetMapping("{age}")
     public ResponseEntity<List<Student>> getStudentInAge (@PathVariable int age){
         return ResponseEntity.ok(studentService.getOnAge(age));
     }

@@ -34,7 +34,6 @@ public class FacultyService {
     }
 
     public List<Faculty> getByColor(String color){
-        //return facultyMap.values().stream().filter(faculty -> faculty.getColor().contains(color)).collect(Collectors.toList());
         return facultyRepository.findByColor(color);
     }
 }

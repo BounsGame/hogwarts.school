@@ -33,13 +33,6 @@ public class StudentService {
     }
 
     public List<Student> getOnAge(int age){
-        /*List<Student> studentList = new ArrayList<>();
-        studentMap.values().stream().mapToInt(e ->
-        {if (e.getAge() == age) {
-            studentList.add(e);
-        }
-        return 0;});
-        return studentList;*/
         return studentRepository.findByAge(age);
     }
 }

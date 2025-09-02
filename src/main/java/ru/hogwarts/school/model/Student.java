@@ -1,10 +1,12 @@
 package ru.hogwarts.school.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Student {
     @Id
     @GeneratedValue
@@ -12,8 +14,10 @@ public class Student {
     private String name;
     private int age;
 
-    public Student(Long id, String name, int age) {
-        this.id = id;
+    public Student(){
+    }
+
+    public Student(String name, int age) {
         this.name = name;
         this.age = age;
     }
