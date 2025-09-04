@@ -3,9 +3,11 @@ package ru.hogwarts.school.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/faculty")
@@ -34,14 +36,26 @@ public class FacultyController {
         return ResponseEntity.ok(faculty);
     }
 
-    @GetMapping
-    public ResponseEntity<Faculty> getFaculty(@RequestParam Long id){
+    @GetMapping("{id}")
+    public ResponseEntity<Faculty> getFaculty(@PathVariable Long id){
         return ResponseEntity.ok(facultyService.get(id));
     }
 
-    @GetMapping("{color}")
-    public ResponseEntity<List<Faculty>> getFacultyByColor(@PathVariable String color){
-        return ResponseEntity.ok(facultyService.getByColor(color));
+    @GetMapping
+    public ResponseEntity<List<Faculty>> getFacultyByColor(@RequestParam(required = false) String color,
+                                                           @RequestParam(required = false) String name){
+        return ResponseEntity.ok(facultyService.getByColorOrName(name,color));
+    }
+
+    @PutMapping("/link")
+    public ResponseEntity<Faculty> linkStudentWithFaculty(@RequestParam Long facultyId, @RequestParam Long studentId){
+        facultyService.linkFacultyWithStudent(facultyId,studentId);
+        return ResponseEntity.ok(null);
+    }
+
+    @GetMapping("/getFacultyStudents")
+    public ResponseEntity<Set<Student>> getFacultyStudents(@RequestParam Long id){
+        return ResponseEntity.ok(facultyService.getStudentListByFacultyId(id));
     }
 
 }
