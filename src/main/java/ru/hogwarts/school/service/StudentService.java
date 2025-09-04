@@ -35,4 +35,12 @@ public class StudentService {
     public List<Student> getOnAge(int age){
         return studentRepository.findByAge(age);
     }
+
+    public List<Student> getAgeBetween(int min,int max){
+        return studentRepository.findByAgeBetween(min,max);
+    }
+
+    public Faculty getFacultyOfStudent(Long id){
+        return studentRepository.getReferenceById(id).getFaculty();
+    }
 }

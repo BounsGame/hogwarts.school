@@ -35,13 +35,24 @@ public class StudentController {
         return ResponseEntity.ok(student);
     }
 
+    @GetMapping("/find")
+    public ResponseEntity<Student> findStudent(@RequestParam Long id){
+            return ResponseEntity.ok(studentService.get(id));
+    }
+
     @GetMapping
-    public ResponseEntity<Student> getStudent(@RequestParam Long id){
-        return ResponseEntity.ok(studentService.get(id));
+    public ResponseEntity<List<Student>> findStudents(@RequestParam(required = false) int min,
+                                                      @RequestParam(required = false) int max){
+        return ResponseEntity.ok(studentService.getAgeBetween(min,max));
     }
 
     @GetMapping("{age}")
     public ResponseEntity<List<Student>> getStudentInAge (@PathVariable int age){
         return ResponseEntity.ok(studentService.getOnAge(age));
+    }
+
+    @GetMapping("/getFacultyOfStudent")
+    public ResponseEntity<Faculty> facultyOfStudent (@RequestParam Long id){
+        return ResponseEntity.ok(studentService.getFacultyOfStudent(id));
     }
 }
