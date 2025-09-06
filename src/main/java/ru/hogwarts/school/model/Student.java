@@ -1,9 +1,7 @@
 package ru.hogwarts.school.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -14,7 +12,14 @@ public class Student {
     private String name;
     private int age;
 
-    public Student(){
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    private Faculty faculty;
+
+    @OneToOne
+    Avatar avatar;
+
+    public Student() {
     }
 
     public Student(String name, int age) {
@@ -44,5 +49,21 @@ public class Student {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public Faculty getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
+    }
+
+    public void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
+    }
+
+    public Avatar getAvatar() {
+        return avatar;
     }
 }
