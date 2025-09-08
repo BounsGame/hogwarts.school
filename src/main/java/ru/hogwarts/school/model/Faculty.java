@@ -24,8 +24,7 @@ public class Faculty {
 
     }
 
-    public Faculty(Long id, String name, String color) {
-        this.id = id;
+    public Faculty(String name, String color) {
         this.name = name;
         this.color = color;
     }
