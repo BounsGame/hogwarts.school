@@ -3,6 +3,8 @@ package ru.hogwarts.school.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Student {
@@ -65,5 +67,17 @@ public class Student {
 
     public Avatar getAvatar() {
         return avatar;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Student student = (Student) o;
+        return Objects.equals(id, student.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

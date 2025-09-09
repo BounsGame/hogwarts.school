@@ -1,5 +1,6 @@
 package ru.hogwarts.school;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.jayway.jsonpath.JsonPath;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
@@ -10,7 +11,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.MediaType;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -63,6 +65,7 @@ public class StudentControllerTest {
         Assertions.assertNotNull(studentController);
     }
 
+    //MockMvc
     @Test
     public void postStudentTest() throws Exception {
         String name = "danil";
@@ -199,5 +202,159 @@ public class StudentControllerTest {
                 .andExpect(status().isOk()).andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.name").value("ravenclaw"))
                 .andExpect(jsonPath("$.color").value("blue"));
+    }
+
+    //TestRestTemplate
+    @Test
+    public void findStudTestRest(){
+        String name = "danil";
+        long id = 1;
+        int age = 21;
+        Student student = new Student(name, age);
+        student.setId(id);
+
+        when(studentRepository.getReferenceById(any(Long.class))).thenReturn(student);
+
+        Student student1 = testRestTemplate.getForObject("http://localhost:" + port + "/student/find?id=1",Student.class);
+
+        Assertions.assertEquals(student1, student);
+    }
+
+    @Test
+    public void findStudents(){
+        String name1 = "danil";
+        Long id1 = 1L;
+        int age1 = 21;
+        String name2 = "dima";
+        Long id2 = 2L;
+        int age2 = 30;
+        Student student1 = new Student(name1, age1);
+        student1.setId(id1);
+        Student student2 = new Student(name2, age2);
+        student2.setId(id2);
+        List<Student> studentList = new ArrayList<>();
+        studentList.add(student1);
+        studentList.add(student2);
+
+        when(studentRepository.findByAgeBetween(any(int.class), any(int.class))).thenReturn(studentList);
+
+        ResponseEntity<List<Student>> response = testRestTemplate
+                .exchange("http://localhost:" + port + "/student?min=20&&max=40", HttpMethod.GET, null
+                        , new ParameterizedTypeReference<List<Student>>() {
+                });
+
+        Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
+        Assertions.assertEquals(studentList,response.getBody());
+    }
+
+    @Test
+    public void getStudentInAgeTest(){
+        String name1 = "danil";
+        Long id1 = 1L;
+        int age1 = 21;
+        String name2 = "dima";
+        Long id2 = 2L;
+        int age2 = 21;
+        Student student1 = new Student(name1, age1);
+        student1.setId(id1);
+        Student student2 = new Student(name2, age2);
+        student2.setId(id2);
+        List<Student> studentList = new ArrayList<>();
+        studentList.add(student1);
+        studentList.add(student2);
+
+        when(studentRepository.findByAge(any(int.class))).thenReturn(studentList);
+
+        ResponseEntity<List<Student>> response = testRestTemplate
+                .exchange("http://localhost:" + port + "/student/{age}", HttpMethod.GET, null
+                        , new ParameterizedTypeReference<List<Student>>() {
+                        },age1);
+
+        Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
+        Assertions.assertEquals(studentList,response.getBody());
+    }
+
+    @Test
+    public void getFacultyOfStudentTest(){
+        long id = 1L;
+        String name1 = "danil";
+        int age1 = 21;
+        Faculty faculty = new Faculty("ravenclaw", "blue");
+        faculty.setId(id);
+        Student student = new Student(name1, age1);
+        student.setId(id);
+        student.setFaculty(faculty);
+
+        when(studentRepository.getReferenceById(any(Long.class))).thenReturn(student);
+
+        ResponseEntity<Faculty> response = testRestTemplate
+                .exchange("http://localhost:" + port + "/student/getFacultyOfStudent?id=1"
+                        , HttpMethod.GET
+                        , null
+                        , Faculty.class);
+
+        Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
+        Assertions.assertEquals(faculty,response.getBody());
+    }
+
+    @Test
+    public void postStudTest(){
+        String name = "danil";
+        long id = 1;
+        int age = 21;
+        Student student = new Student(name, age);
+        HttpEntity<Student> request = new HttpEntity<>(student);
+        student.setId(id);
+
+        when(studentRepository.save(any(Student.class))).thenReturn(student);
+        when(studentRepository.findByAgeAndName(any(int.class), any(String.class))).thenReturn(student);
+
+        ResponseEntity<Student> response = testRestTemplate
+                .exchange("http://localhost:" + port + "/student"
+                        , HttpMethod.POST
+                        , request
+                        , Student.class);
+
+        Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
+        Assertions.assertEquals(student,response.getBody());
+
+        verify(studentService).post(any(Student.class));
+    }
+
+    @Test
+    public void deleteStudTest(){
+        ResponseEntity<Student> response = testRestTemplate
+                .exchange("http://localhost:" + port + "/student/{id}"
+                        , HttpMethod.DELETE
+                        , null
+                        ,Student.class
+                        ,1);
+
+        Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
+
+        verify(studentRepository).deleteById(any(Long.class));
+    }
+
+    @Test
+    public void putStudentTest(){
+        String name = "danil";
+        long id = 1;
+        int age = 21;
+        Student student = new Student(name, age);
+        student.setId(id);
+        HttpEntity<Student> request = new HttpEntity<>(student);
+
+        when(studentRepository.save(any(Student.class))).thenReturn(student);
+
+        ResponseEntity<Student> response = testRestTemplate
+                .exchange("http://localhost:" + port + "/student"
+                        , HttpMethod.PUT
+                        , request
+                        , Student.class);
+
+        Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
+        Assertions.assertEquals(student,response.getBody());
+
+        verify(studentService).post(any(Student.class));
     }
 }
