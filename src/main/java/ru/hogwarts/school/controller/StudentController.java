@@ -18,9 +18,9 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<Student> postStudent(@RequestBody Long id , @RequestBody Student student){
+    public ResponseEntity<Student> postStudent(@RequestBody Student student){
         studentService.post(student);
-        return ResponseEntity.ok(studentService.get(id));
+        return ResponseEntity.ok(studentService.findIdByStud(student));
     }
 
     @DeleteMapping("{id}")

@@ -16,31 +16,35 @@ public class StudentService {
     private StudentRepository studentRepository;
 
     @Autowired
-    public StudentService (StudentRepository studentRepository){
+    public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
     }
 
-    public void post(Student student){
+    public void post(Student student) {
         studentRepository.save(student);
     }
 
-    public Student get(Long id1){
+    public Student get(Long id1) {
         return studentRepository.getReferenceById(id1);
     }
 
-    public void remove(Long id1){
+    public void remove(Long id1) {
         studentRepository.deleteById(id1);
     }
 
-    public List<Student> getOnAge(int age){
+    public List<Student> getOnAge(int age) {
         return studentRepository.findByAge(age);
     }
 
-    public List<Student> getAgeBetween(int min,int max){
-        return studentRepository.findByAgeBetween(min,max);
+    public List<Student> getAgeBetween(int min, int max) {
+        return studentRepository.findByAgeBetween(min, max);
     }
 
-    public Faculty getFacultyOfStudent(Long id){
+    public Faculty getFacultyOfStudent(Long id) {
         return studentRepository.getReferenceById(id).getFaculty();
+    }
+
+    public Student findIdByStud(Student student) {
+        return studentRepository.findByAgeAndName(student.getAge(), student.getName());
     }
 }

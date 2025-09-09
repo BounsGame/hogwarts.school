@@ -16,7 +16,7 @@ public class FacultyService {
     private StudentRepository studentRepository;
 
     @Autowired
-    public FacultyService(FacultyRepository facultyRepository,StudentRepository studentRepository) {
+    public FacultyService(FacultyRepository facultyRepository, StudentRepository studentRepository) {
         this.facultyRepository = facultyRepository;
         this.studentRepository = studentRepository;
     }
@@ -49,7 +49,11 @@ public class FacultyService {
         studentRepository.save(student);
     }
 
-    public Set<Student> getStudentListByFacultyId(Long id){
+    public Set<Student> getStudentListByFacultyId(Long id) {
         return facultyRepository.getReferenceById(id).getStudentList();
+    }
+
+    public Faculty getIdByFaculty(Faculty faculty) {
+        return facultyRepository.findByNameAndColor(faculty.getName(), faculty.getColor());
     }
 }
