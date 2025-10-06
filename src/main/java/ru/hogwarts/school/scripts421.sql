@@ -1,0 +1,16 @@
+CREATE TABLE student (
+id INTEGER PRIMARY KEY,
+name VARCHAR UNIQUE NOT NULL,
+age INTEGER CHECK (age > 16) DEFAULT 20,
+avatar BYTEA,
+faculty VARCHAR,
+FOREIGN KEY (faculty) REFERENCES faculty(name),
+);
+
+CREATE TABLE faculty (
+id INTEGER PRIMARY KEY,
+name VARCHAR UNIQUE,
+color VARCHAR UNIQUE,
+studentList ARRAY,
+);
+
