@@ -1,0 +1,33 @@
+CREATE TABLE student (
+id INTEGER PRIMARY KEY,
+name VARCHAR UNIQUE NOT NULL,
+age INTEGER CHECK (age > 16) DEFAULT 20,
+avatar BYTEA,
+faculty VARCHAR,
+FOREIGN KEY (faculty) REFERENCES faculty(name),
+);
+
+CREATE TABLE faculty (
+id INTEGER PRIMARY KEY,
+name VARCHAR UNIQUE,
+color VARCHAR UNIQUE,
+studentList ARRAY,
+);
+
+
+//через ALTER
+
+ALTER TABLE student
+ALTER COLUMN name NOT NULL;
+
+ALTER TABLE student
+ADD CONSTRAINT uk_name UNIQUE (name);
+
+ALTER TABLE student
+ADD CONSTRAINT chk_age CHECK (age > 16);
+
+ALTER TABLE student
+ALTER COLUMN age SET DEFAULT 20;
+
+ALTER TABLE faculty
+ADD CONSTRAINT uk_faculty UNIQUE (name, color);
