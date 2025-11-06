@@ -1,5 +1,6 @@
 package ru.hogwarts.school.service;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import org.slf4j.*;
 
 import static io.swagger.v3.core.util.AnnotationsUtils.getExtensions;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
@@ -24,6 +26,8 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 public class AvatarService {
     private AvatarRepository avatarRepository;
     private StudentRepository studentRepository;
+
+    Logger logger = LoggerFactory.getLogger(AvatarService.class);
 
     @Value("${path.to.avatars.folder}")
     private String avatarsDir;
@@ -35,6 +39,7 @@ public class AvatarService {
     }
 
     public void uploadAvatar(Long studID, MultipartFile avatarFile) throws IOException {
+        logger.info("скачивание аватара запустилось");
         Student student = studentRepository.getReferenceById(studID);
         Path filePath = Path.of(avatarsDir, student + "." + getExtensions(avatarFile.getOriginalFilename()));
         Files.createDirectories(filePath.getParent());
@@ -59,14 +64,17 @@ public class AvatarService {
     }
 
     private String getExtensions(String fileName) {
+        logger.info("метод getExtensions запустился");
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
     public Avatar getAvatarById(Long id) {
+        logger.info("метод getAvatarById запустился");
         return avatarRepository.getReferenceById(id);
     }
 
     public Page<Avatar> getAllPaged (Integer pageNumber, Integer pageSize){
+        logger.info("метод getAllPaged запустился");
         PageRequest pageRequest = PageRequest.of(pageNumber - 1,pageSize);
         return avatarRepository.findAll(pageRequest);
     }
