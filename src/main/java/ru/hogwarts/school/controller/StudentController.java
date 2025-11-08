@@ -8,6 +8,7 @@ import ru.hogwarts.school.service.StudentService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalDouble;
 
 @RestController
 @RequestMapping("/student")
@@ -70,5 +71,15 @@ public class StudentController {
     @GetMapping("/last5")
     public ResponseEntity<List<Student>> last5Students (){
         return ResponseEntity.ok(studentService.last5Students());
+    }
+
+    @GetMapping("/studentsWithNameOnA")
+    public ResponseEntity<List<String>> studentsWithNameOnA (){
+        return ResponseEntity.ok(studentService.allNameOfStudentsWhoStartsOnA());
+    }
+
+    @GetMapping("/avarageAgeThroughStream")
+    public ResponseEntity<OptionalDouble> avarageAgeThroughStream (){
+        return ResponseEntity.ok(studentService.averageAgeThroughStream());
     }
 }
