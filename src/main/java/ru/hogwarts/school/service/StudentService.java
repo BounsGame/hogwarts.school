@@ -8,15 +8,13 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
     private StudentRepository studentRepository;
-    Logger logger = LoggerFactory.getLogger(FacultyService.class);
+    Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     @Autowired
     public StudentService(StudentRepository studentRepository) {
@@ -71,5 +69,16 @@ public class StudentService {
     public List<Student> last5Students (){
         logger.info("метод получения последних 5 зачисленых студентов запустился");
         return studentRepository.last5Stud();
+    }
+
+    public List<String> allNameOfStudentsWhoStartsOnA (){
+        List<Student> stud = studentRepository.findAll();
+        return stud.stream().map(Student::getName).parallel().filter(w -> w.startsWith("A")).sorted()
+                .collect(Collectors.toList());
+    }
+
+    public OptionalDouble averageAgeThroughStream (){
+        List<Student> stud = studentRepository.findAll();
+        return stud.stream().map(Student::getAge).parallel().mapToInt(Integer::intValue).average();
     }
 }

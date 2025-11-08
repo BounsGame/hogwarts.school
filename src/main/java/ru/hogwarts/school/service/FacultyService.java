@@ -66,4 +66,9 @@ public class FacultyService {
         logger.info("метод получения id факультета запустился");
         return facultyRepository.findByNameAndColor(faculty.getName(), faculty.getColor());
     }
+
+    public Optional<String> longestName (){
+        List<Faculty> facultyList = facultyRepository.findAll();
+        return facultyList.stream().map(Faculty::getName).parallel().max(Comparator.comparing(String::length));
+    }
 }
