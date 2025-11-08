@@ -56,29 +56,75 @@ public class StudentService {
         return studentRepository.findByAgeAndName(student.getAge(), student.getName());
     }
 
-    public Long countStudents(){
+    public Long countStudents() {
         logger.info("метод подсчёта студентов запустился");
         return studentRepository.countAllStudents();
     }
 
-    public Long averageAgeOfStudents(){
+    public Long averageAgeOfStudents() {
         logger.info("метод подсчёта среднего возраста студентов запустился");
         return studentRepository.averageAgeOfStudents();
     }
 
-    public List<Student> last5Students (){
+    public List<Student> last5Students() {
         logger.info("метод получения последних 5 зачисленых студентов запустился");
         return studentRepository.last5Stud();
     }
 
-    public List<String> allNameOfStudentsWhoStartsOnA (){
+    public List<String> allNameOfStudentsWhoStartsOnA() {
         List<Student> stud = studentRepository.findAll();
         return stud.stream().map(Student::getName).parallel().filter(w -> w.startsWith("A")).sorted()
                 .collect(Collectors.toList());
     }
 
-    public OptionalDouble averageAgeThroughStream (){
+    public OptionalDouble averageAgeThroughStream() {
         List<Student> stud = studentRepository.findAll();
         return stud.stream().map(Student::getAge).parallel().mapToInt(Integer::intValue).average();
+    }
+
+    public List<Student> sixStud() {
+        return studentRepository.sixStudents();
+    }
+
+    public void printParallel() {
+
+        System.out.println(sixStud().get(0).getName());
+        System.out.println(sixStud().get(1).getName());
+
+        new Thread(() -> printParallel2()).start();
+        new Thread(() -> printParallel3()).start();
+    }
+
+    public void printParallel2() {
+        System.out.println(sixStud().get(2).getName());
+        System.out.println(sixStud().get(3).getName());
+    }
+
+    public void printParallel3() {
+        System.out.println(sixStud().get(4).getName());
+        System.out.println(sixStud().get(5).getName());
+    }
+
+    public synchronized void printName(String name){
+        System.out.println(name);
+    }
+
+    public void printSynchronized(){
+        List<Student> students = studentRepository.sixStudents();
+
+        printName(students.get(0).getName());
+        printName(students.get(1).getName());
+
+        Thread thread1 = new Thread(()-> {
+            printName(students.get(2).getName());
+            printName(students.get(3).getName());
+        });
+        thread1.start();
+
+        Thread thread2 = new Thread(()-> {
+            printName(students.get(4).getName());
+            printName(students.get(5).getName());
+        });
+        thread2.start();
     }
 }
